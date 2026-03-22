@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- CSP Protection -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self';">
+
+    <!-- SEO -->
+    <title>HACKTIVIST HUB — Мы меняем систему изнутри</title>
+    <meta name="description" content="Хактивистский хаб: проекты, которые уже работают. Z-PENTEST ALLIANCE, KittySearch, BreakBit, PalachPro.">
+    <meta name="keywords" content="hacktivist, хактивизм, cybersecurity, pentest, hacking">
+    <meta name="author" content="HACKTIVIST HUB">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="HACKTIVIST HUB">
+    <meta property="og:description" content="4 проекта, которые уже работают. Мы меняем систему изнутри.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ru_RU">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           CSS RESET & VARIABLES
+           ============================================ */
+        :root {
+            --bg: #0a0a0a;
+            --green: #00ff41;
+            --magenta: #ff00ff;
+            --red: #ff0040;
+            --violet: #aa00ff;
+            --white: #e0e0e0;
+            --white-bright: #ffffff;
+            --card-bg: rgba(15, 15, 15, 0.85);
+            --border: rgba(255, 255, 255, 0.06);
+            --font-mono: 'Space Mono', 'Courier New', monospace;
+            --font-sans: 'Space Grotesk', 'Courier New', monospace;
+            --transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--white);
+            overflow-x: hidden;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        ::selection {
+            background: var(--green);
+            color: var(--bg);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* ============================================
+           CANVAS LAYERS (Globe + Matrix Rain)
+           ============================================ */
+        #globe-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+        }
+
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            opacity: 0.12;
+            pointer-events: none;
+        }
+
+        /* Content overlay */
+        .content-layer {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ============================================
+           HEADER
+           ============================================ */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--green);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            fill: var(--green);
+            filter: drop-shadow(0 0 6px var(--green));
+        }
+
+        .logo-blink {
+            animation: blink 1.2s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .slogan {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+        }
+
+        /* ============================================
+           HERO
+           ============================================ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero-title {
+            font-family: var(--font-mono);
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--white-bright);
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeUp 1s ease-out 0.5s forwards;
+            text-shadow: 0 0 40px rgba(0, 255, 65, 0.15);
+        }
+
+        .hero-title span {
+            color: var(--green);
+            text-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+
+        .hero-sub {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: rgba(255, 255, 255, 0.45);
+            font-family: var(--font-mono);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 1s ease-out 0.8s forwards;
+        }
+
+        .hero-line {
+            width: 60px;
+            height: 2px;
+            background: var(--green);
+            margin: 2rem auto;
+            opacity: 0;
+            animation: fadeUp 1s ease-out 1s forwards;
+            box-shadow: 0 0 10px var(--green);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            animation: fadeUp 1s ease-out 1.5s forwards;
+        }
+
+        .scroll-hint svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--green);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+
+        /* ============================================
+           PROJECTS SECTION
+           ============================================ */
+        .projects-section {
+            padding: 4rem 2rem 6rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--green);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 3rem;
+            opacity: 0;
+        }
+
+        .section-label.visible {
+            animation: fadeUp 0.8s ease-out forwards;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* ============================================
+           CARD
+           ============================================ */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .card.visible {
+            animation: fadeUp 0.7s ease-out forwards;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--card-accent);
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+
+        .card:hover {
+            transform: scale(1.05) translateY(-4px);
+            border-color: var(--card-accent);
+            box-shadow: 0 0 30px color-mix(in srgb, var(--card-accent) 25%, transparent),
+                        0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+            box-shadow: 0 0 15px var(--card-accent);
+        }
+
+        /* Particle container on hover */
+        .card-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 1rem;
+            fill: var(--card-accent);
+            filter: drop-shadow(0 0 8px var(--card-accent));
+            transition: filter var(--transition);
+        }
+
+        .card:hover .card-icon {
+            filter: drop-shadow(0 0 16px var(--card-accent));
+        }
+
+        .card-title {
+            font-family: var(--font-mono);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--card-accent);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px color-mix(in srgb, var(--card-accent) 30%, transparent);
+        }
+
+        .card-desc {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.5;
+        }
+
+        .card-arrow {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 20px;
+            height: 20px;
+            stroke: var(--card-accent);
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: opacity var(--transition), transform var(--transition);
+        }
+
+        .card:hover .card-arrow {
+            opacity: 0.7;
+            transform: translateX(0);
+        }
+
+        /* ============================================
+           MODAL / OVERLAY
+           ============================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.92);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background: rgba(15, 15, 15, 0.95);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            padding: 3rem 2.5rem;
+            position: relative;
+            transform: scale(0.85) translateY(30px);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--modal-accent, var(--green));
+            box-shadow: 0 0 20px var(--modal-accent, var(--green));
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background var(--transition), border-color var(--transition);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 0, 64, 0.15);
+            border-color: var(--red);
+        }
+
+        .modal-close svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--white);
+        }
+
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1.5rem;
+            fill: var(--modal-accent, var(--green));
+            filter: drop-shadow(0 0 12px var(--modal-accent, var(--green)));
+        }
+
+        .modal-title {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--modal-accent, var(--green));
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px color-mix(in srgb, var(--modal-accent, var(--green)) 40%, transparent);
+        }
+
+        .modal-desc {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.65);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .modal-achievements {
+            margin-bottom: 2rem;
+        }
+
+        .modal-achievements h4 {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--modal-accent, var(--green));
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-achievements ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .modal-achievements li {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.55);
+            padding: 0.4rem 0;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+
+        .modal-achievements li::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--modal-accent, var(--green));
+            font-weight: 700;
+        }
+
+        .modal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.9rem 2rem;
+            background: transparent;
+            border: 1px solid var(--modal-accent, var(--green));
+            border-radius: 8px;
+            color: var(--modal-accent, var(--green));
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background var(--transition), box-shadow var(--transition), color var(--transition);
+        }
+
+        .modal-btn:hover {
+            background: var(--modal-accent, var(--green));
+            color: var(--bg);
+            box-shadow: 0 0 30px color-mix(in srgb, var(--modal-accent, var(--green)) 40%, transparent);
+        }
+
+        .modal-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 1px;
+        }
+
+        .footer a {
+            color: var(--green);
+            transition: text-shadow 0.3s ease;
+        }
+
+        .footer a:hover {
+            text-shadow: 0 0 10px var(--green);
+        }
+
+        /* ============================================
+           SCROLLBAR
+           ============================================ */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 65, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 65, 0.4);
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.8rem 1rem;
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .logo {
+                font-size: 1rem;
+            }
+
+            .slogan {
+                font-size: 0.65rem;
+            }
+
+            .projects-section {
+                padding: 3rem 1rem 4rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .card {
+                padding: 1.5rem 1.2rem;
+            }
+
+            .modal-box {
+                padding: 2rem 1.5rem;
+            }
+
+            .modal-title {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* ============================================
+           FOCUS STYLES (Accessibility)
+           ============================================ */
+        .card:focus-visible,
+        .modal-close:focus-visible,
+        .modal-btn:focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: 2px;
+        }
+
+        /* ============================================
+           GLITCH TEXT EFFECT (subtle)
+           ============================================ */
+        @keyframes glitch {
+            0%, 100% { text-shadow: 0 0 10px rgba(0,255,65,0.3); }
+            25% { text-shadow: -2px 0 var(--magenta), 2px 0 var(--green); }
+            50% { text-shadow: 0 0 10px rgba(0,255,65,0.3); }
+            75% { text-shadow: 2px 0 var(--red), -2px 0 var(--green); }
+        }
+
+        .glitch-hover:hover {
+            animation: glitch 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- =============================================
+         THREE.JS GLOBE CANVAS
+         ============================================= -->
+    <canvas id="globe-canvas" aria-hidden="true"></canvas>
+
+    <!-- =============================================
+         MATRIX RAIN CANVAS
+         ============================================= -->
+    <canvas id="matrix-canvas" aria-hidden="true"></canvas>
+
+    <!-- =============================================
+         CONTENT LAYER
+         ============================================= -->
+    <div class="content-layer">
+
+        <!-- HEADER -->
+        <header class="header" role="banner">
+            <div class="logo" aria-label="HACKTIVIST HUB">
+                <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                HACKTIVIST HUB<span class="logo-blink">_</span>
+            </div>
+            <div class="slogan">Мы меняем систему изнутри</div>
+        </header>
+
+        <!-- HERO -->
+        <section class="hero" role="main" aria-label="Главная секция">
+            <h1 class="hero-title">
+                <span>4</span> проекта, которые<br>уже работают
+            </h1>
+            <div class="hero-line" aria-hidden="true"></div>
+            <p class="hero-sub">// open source resistance //</p>
+            <div class="scroll-hint" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+                    <path d="M12 5v14M19 12l-7 7-7-7"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section class="projects-section" id="projects" aria-label="Проекты">
+            <div class="section-label">[ ACTIVE PROJECTS ]</div>
+            <div class="cards-grid" id="cards-grid">
+                <!-- Cards rendered by JS -->
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer" role="contentinfo">
+            Hosted on GitHub Pages • 2026 • Связь: <a href="https://t.me/breakb1t" target="_blank" rel="noopener noreferrer">t.me/breakb1t</a>
+        </footer>
+    </div>
+
+    <!-- =============================================
+         MODAL
+         ============================================= -->
+    <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-box" id="modal-box">
+            <button class="modal-close" id="modal-close" aria-label="Закрыть">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+            </button>
+            <div id="modal-content">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================
+         THREE.JS CDN
+         ============================================= -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+    <!-- =============================================
+         MAIN SCRIPT
+         ============================================= -->
+    <script>
+    /* ================================================
+       PROJECT DATA — EDIT HERE TO CHANGE PROJECTS
+       ================================================ */
+    const PROJECTS = [
+        {
+            id: 'z-pentest',
+            title: 'Z-PENTEST ALLIANCE',
+            shortDesc: 'Альянс опытных хактивистов, ломающие любые системы на их пути',
+            fullDesc: 'Z-PENTEST ALLIANCE — это элитная группа хактивистов с многолетним опытом проникновения в защищённые системы. Альянс объединяет лучших специалистов по пентесту, реверс-инжинирингу и сетевой безопасности. Каждая операция — точный удар по уязвимым точкам системы.',
+            achievements: [
+                'Многолетний опыт пентеста критической инфраструктуры',
+                'Объединение лучших специалистов в единую сеть',
+                'Системный подход к анализу уязвимостей',
+                'Непрерывное расширение арсенала инструментов'
+            ],
+            link: 'https://t.me/+3sxU95y7pM85ZjIx',
+            accent: '#ff0040', // red
+            icon: 'skull'
+        },
+        {
+            id: 'kittysearch',
+            title: 'KittySearch',
+            shortDesc: 'Опытный хакер, который найдёт админ-панель в любой системе',
+            fullDesc: 'KittySearch — это инструмент и сообщество, сфокусированное на обнаружении скрытых административных панелей, забытых endpoints и теневых точек входа в любые веб-системы. Методология включает комбинацию автоматизированного сканирования и ручного анализа.',
+            achievements: [
+                'Уникальные алгоритмы обнаружения админ-панелей',
+                'Обширная база шаблонов и сигнатур',
+                'Быстрое время реакции на новые цели',
+                'Постоянное обновление методологии поиска'
+            ],
+            link: 'https://t.me/kittysearchnews',
+            accent: '#aa00ff', // violet
+            icon: 'search'
+        },
+        {
+            id: 'breakbit',
+            title: 'BreakBit',
+            shortDesc: 'Комьюнити юных хактивистов, ломающие системы, требуя власть и свободу',
+            fullDesc: 'BreakBit — это растущее сообщество нового поколения хактивистов. Молодые, амбициозные, бесстрашные. Они ломают системы не ради выгоды, а ради идеи: свободный интернет, прозрачность власти, право на информацию. Каждый взлом — это манифест.',
+            achievements: [
+                'Быстрорастущее сообщество единомышленников',
+                'Фокус на свободе информации и прозрачности',
+                'Образовательные программы для новых участников',
+                'Активные операции по всему миру'
+            ],
+            link: 'https://t.me/breakb1t',
+            accent: '#00ff41', // green
+            icon: 'bolt'
+        },
+        {
+            id: 'palachpro',
+            title: 'PalachPro',
+            shortDesc: 'Хактивист с огромным опытом, которому не страшны блокировки',
+            fullDesc: 'PalachPro — ветеран хактивизма, который прошёл через все возможные блокировки и преследования. Его невозможно остановить, невозможно заблокировать, невозможно заглушить. Каждая попытка цензуры — лишь подтверждение эффективности его работы.',
+            achievements: [
+                'Непревзойдённый опыт обхода блокировок',
+                'Устойчивость к любым формам цензуры',
+                'Разработка инструментов анти-блокировки',
+                'Менторство для новых хактивистов'
+            ],
+            link: 'https://t.me/palachpro2',
+            accent: '#ffffff', // white
+            icon: 'shield'
+        }
+    ];
+
+    /* ================================================
+       SVG ICONS
+       ================================================ */
+    const ICONS = {
+        skull: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 3.07 1.39 5.81 3.57 7.64l.03.02V22h4v-2h4v2h4v-2.34l.03-.02C20.61 17.81 22 15.07 22 12c0-5.52-4.48-10-10-10zM9 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>`,
+        search: `<svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>`,
+        bolt: `<svg viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.88 0-.33-.75-.31-.78C8.48 10.94 10.42 7.54 13.01 3h1l-1 7h3.51c.4 0 .62.19.4.66C12.97 17.55 11 21 11 21z"/></svg>`,
+        shield: `<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>`
+    };
+
+    /* ================================================
+       RENDER CARDS
+       ================================================ */
+    const grid = document.getElementById('cards-grid');
+
+    PROJECTS.forEach((project, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.setProperty('--card-accent', project.accent);
+        card.style.animationDelay = `${0.2 + index * 0.15}s`;
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `Открыть проект ${project.title}`);
+
+        card.innerHTML = `
+            <canvas class="card-particles" aria-hidden="true"></canvas>
+            <div class="card-content">
+                <div class="card-icon">${ICONS[project.icon]}</div>
+                <h3 class="card-title">${project.title}</h3>
+                <p class="card-desc">${project.shortDesc}</p>
+            </div>
+            <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        `;
+
+        // Click → open modal
+        card.addEventListener('click', () => openModal(project));
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openModal(project);
+            }
+        });
+
+        // Hover particles
+        card.addEventListener('mouseenter', () => startCardParticles(card, project.accent));
+        card.addEventListener('mouseleave', () => stopCardParticles(card));
+
+        grid.appendChild(card);
+    });
+
+    /* ================================================
+       CARD PARTICLES ON HOVER
+       ================================================ */
+    const cardParticleAnimations = new Map();
+
+    function startCardParticles(card, color) {
+        const canvas = card.querySelector('.card-particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = card.offsetWidth;
+        canvas.height = card.offsetHeight;
+
+        const particles = [];
+        for (let i = 0; i < 20; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.8,
+                vy: (Math.random() - 0.5) * 0.8,
+                r: Math.random() * 2 + 0.5,
+                alpha: Math.random() * 0.6 + 0.2
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.globalAlpha = p.alpha;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            });
+            const id = requestAnimationFrame(animate);
+            cardParticleAnimations.set(card, id);
+        }
+        animate();
+    }
+
+    function stopCardParticles(card) {
+        const id = cardParticleAnimations.get(card);
+        if (id) cancelAnimationFrame(id);
+        const canvas = card.querySelector('.card-particles');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    /* ================================================
+       MODAL LOGIC
+       ================================================ */
+    const overlay = document.getElementById('modal-overlay');
+    const modalBox = document.getElementById('modal-box');
+    const modalContent = document.getElementById('modal-content');
+    const modalCloseBtn = document.getElementById('modal-close');
+
+    function openModal(project) {
+        modalBox.style.setProperty('--modal-accent', project.accent);
+        modalBox.style.borderColor = project.accent + '33';
+
+        const achievementsHTML = project.achievements
+            .map(a => `<li>${a}</li>`).join('');
+
+        modalContent.innerHTML = `
+            <div class="modal-icon">${ICONS[project.icon]}</div>
+            <h2 class="modal-title" id="modal-title">${project.title}</h2>
+            <p class="modal-desc">${project.fullDesc}</p>
+            <div class="modal-achievements">
+                <h4>// Достижения</h4>
+                <ul>${achievementsHTML}</ul>
+       
