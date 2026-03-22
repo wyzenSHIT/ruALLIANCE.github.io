@@ -30,7 +30,6 @@
             overflow-x: hidden;
         }
 
-        /* Анимация появления заголовка */
         header {
             margin-bottom: 70px;
             animation: fadeInDown 1s ease forwards;
@@ -51,7 +50,6 @@
             max-width: 1200px;
         }
 
-        /* Базовая карточка с анимацией появления */
         .project-card {
             background: var(--card-bg);
             border: 1px solid #151515;
@@ -70,7 +68,6 @@
             animation: fadeInUp 0.8s ease forwards;
         }
 
-        /* Задержки для поочередного появления карточек */
         .project-card:nth-child(1) { animation-delay: 0.2s; }
         .project-card:nth-child(2) { animation-delay: 0.4s; }
         .project-card:nth-child(3) { animation-delay: 0.6s; }
@@ -91,7 +88,6 @@
             transition: var(--transition);
         }
 
-        /* Кнопка ТГ (скрыта по умолчанию) */
         .tg-btn {
             margin-top: 35px;
             padding: 14px 40px;
@@ -106,11 +102,9 @@
             transition: var(--transition);
         }
 
-        /* Эффекты при наведении */
         .project-card:hover {
             background: #111111;
             transform: translateY(-15px) scale(1.02);
-            border-color: rgba(255,255,255,0.1);
         }
 
         .project-card:hover p {
@@ -122,13 +116,11 @@
             transform: scale(1);
         }
 
-        /* Свечение боков */
         .red:hover { box-shadow: 0 10px 50px rgba(255, 0, 0, 0.3); border-color: #ff0000; }
         .purple:hover { box-shadow: 0 10px 50px rgba(160, 32, 240, 0.3); border-color: #a020f0; }
         .green:hover { box-shadow: 0 10px 50px rgba(0, 255, 0, 0.3); border-color: #00ff00; }
         .white:hover { box-shadow: 0 10px 50px rgba(255, 255, 255, 0.2); border-color: #ffffff; }
 
-        /* Ключевые кадры анимаций */
         @keyframes fadeInUp {
             to { opacity: 1; transform: translateY(0); }
         }
@@ -154,25 +146,25 @@
         <div class="project-card red">
             <h2>Z-PENTEST</h2>
             <p>Альянс Хактивистов ломающие любые системы</p>
-            <a href="https://t.me/твой_канал_1" target="_blank" class="tg-btn">ENTER TG</a>
+            <a href="https://t.me/+3sxU95y7pM85ZjIx" target="_blank" class="tg-btn">ENTER TG</a>
         </div>
 
         <div class="project-card purple">
-            <h2>ROOT EXPLOIT</h2>
+            <h2>KittySearch</h2>
             <p>Опытный хакер в проникновении и получении привилегий root</p>
-            <a href="https://t.me/твой_канал_2" target="_blank" class="tg-btn">CONTACT</a>
+            <a href="https://t.me/kittysearchnews" target="_blank" class="tg-btn">CONTACT</a>
         </div>
 
         <div class="project-card green">
-            <h2>DATA BREACH</h2>
+            <h2>BreakBit</h2>
             <p>Комьюнити Хактивистов стремящиеся украсть данные</p>
-            <a href="https://t.me/твой_канал_3" target="_blank" class="tg-btn">JOIN US</a>
+            <a href="https://t.me/breakb1t" target="_blank" class="tg-btn">JOIN US</a>
         </div>
 
         <div class="project-card white">
-            <h2>OLD SCHOOL</h2>
+            <h2>PalachPro</h2>
             <p>Опытный Хакер с огромным стажем работы имеющий огромный опыт</p>
-            <a href="https://t.me/твой_канал_4" target="_blank" class="tg-btn">PROFILE</a>
+            <a href="https://palachpro2" target="_blank" class="tg-btn">PROFILE</a>
         </div>
 
     </div>
